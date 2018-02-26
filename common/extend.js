@@ -67,3 +67,7 @@ function extend() {
   }
   return target;
 }
+
+module.exports = {
+  extend
+}
