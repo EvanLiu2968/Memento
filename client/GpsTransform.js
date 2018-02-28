@@ -77,10 +77,8 @@ function gcj02_To_Bd09(lat, lon){
   var x = lon, y = lat;
   var z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
   var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
-  // var tempLon = z * Math.cos(theta) + 0.0065;
-  var tempLon = z * Math.cos(theta) + 0.001;
-  // var tempLat = z * Math.sin(theta) + 0.006;
-  var tempLat = z * Math.sin(theta) + 0.010;
+  var tempLon = z * Math.cos(theta) + 0.0012; //origin 0.0065
+  var tempLat = z * Math.sin(theta) + 0.009; //origin 0.006
   var gps = [tempLat,tempLon];
   return gps;
 }
