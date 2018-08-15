@@ -38,7 +38,7 @@ function isUrl(value) {
  */
 var corsWindow = null
 if(isClient){
-  const iframeSrc=isUrl(window.CONFIG.SITE.www) ? window.CONFIG.SITE.www : 'http://www.test.7atour.com/'; //方便本地测试
+  const iframeSrc=isUrl(window.CONFIG.SITE.www) ? window.CONFIG.SITE.www : 'http://www.evanliu2968.com.cn';
   if(window.location.href.indexOf(iframeSrc)>-1){
     // corsWindow = window
   }else{

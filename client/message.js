@@ -1,3 +1,6 @@
+const $ = require('jquery')
+const layer = require('layer')
+
 module.exports = {
   //信息框，必须参数:content:内容；可选参数:title:标题；yesfunc:确定回调；option:自定义配置
   alert: function(content, title, yesfunc, option) {
