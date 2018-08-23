@@ -4,12 +4,15 @@
 import { searchMode } from './Config'
 
 const valueSeparator=',';
-/*
- * search形式参数：/?key=value&key=value
+
+/**
+ * 将当前search字符串结合新加map参数拼接成新的search字符串
+ * 
+ * @param {String} search 
+ * @param {JSON} map 
+ * @returns {String}
  */
-// 将当前search字符串结合新加map参数拼接成新的search字符串
 function concatSearch(search,map){
-  // console.log(search)
   var searchMap=formatSearch(search);
   for(let key in map){
     if(searchMap[key]&&searchMap[key].split(valueSeparator).some((v)=>v==map[key])) continue;//重复参数忽略
@@ -23,7 +26,12 @@ function concatSearch(search,map){
   }
   return joinSearch(searchMap)
 }
-// format location.search as searchMap
+/**
+ * format location.search as searchMap
+ * 
+ * @param {String} search 
+ * @returns {JSON}
+ */
 function formatSearch(search){
   var searchMap = {};
   if(!search){ return searchMap }
@@ -55,11 +63,17 @@ function joinSearch(searchMap){
     return ''
   }
 }
-//将config的参数设置为serialize的参数，原参数抛弃
+/**
+ * 将config的参数设置为serialize的参数，原参数抛弃
+ * 
+ * @param {String} search 
+ * @param {JSON} map 
+ * @returns {String}
+ */
 function setSearchParam(search,map){
   var searchMap=formatSearch(search);
   for(let key in map){
-    if(map[key]){ //兼容undefine或空字符串
+    if(map[key]===0 || map[key]==='0' || map[key]){ //0 '0'是允许格式参数(价格范围:0~50)
       searchMap[key]=map[key]+'' // 防止提交数字格式
     }else{
       searchMap[key]=''
@@ -67,7 +81,12 @@ function setSearchParam(search,map){
   }
   return joinSearch(searchMap)
 }
-//将key值的参数全部删除（例如不限功能），key可为String || Array (key的list)
+/**
+ * 将key值的参数全部删除（例如不限功能
+ * @param {String} search 
+ * @param {String || Array} key 
+ * @returns {JSON}
+ */
 function removeSearchParam(search,key){
   var searchMap=formatSearch(search);
   if(typeof key == 'string'){
@@ -81,7 +100,13 @@ function removeSearchParam(search,key){
   }
   return joinSearch(searchMap)
 }
-//从search获取key的value
+/**
+ * 从search获取key的value
+ * 
+ * @param {String} search 
+ * @param {String} key 
+ * @returns {String} value
+ */
 function getSearchParam(search,key){
   var searchMap=formatSearch(search);
   if(searchMap[key]){
@@ -91,10 +116,12 @@ function getSearchParam(search,key){
   }
 }
 
-/*
- * others
+/**
+ * format location.pathname as params
+ * 
+ * @param {Number} level (default as 1)
+ * @returns 
  */
-// format location.pathname as params
 function formatPath(level){
   level=level?parseInt(level):1;//基路由级数，默认为一级目录
   if(typeof window === 'undefined'){
@@ -109,46 +136,37 @@ function formatPath(level){
     dest:paramArr[level+4]
   }
 }
-//根据paramstr返回搜索条件参数json，页面用_.merge复制，propertyArray会传入外层多余参数，后台可忽略
-function getPostData(search){
-  var propertyArray=[],searchMap={};
-  searchMap=formatSearch(search)
-  for(let key in searchMap){
-    propertyArray.push({
-      propertyCode:key,
-      propertyValueIds:decodeURIComponent(searchMap[key]),
-    })
-  }
-  return {
-    method:'searchProductCondition.do',
-    pageSize:10,
-    pageNumber:searchMap.page?searchMap.page:1,
-    ascCondition:searchMap.asc,
-    descCondition:searchMap.desc,
-    // destination:searchMap.destination,
-    // priceMin:searchMap.priceMin,
-    // priceMax:searchMap.priceMax,
-    productName:searchMap.productName?decodeURIComponent(searchMap.productName):undefined,
-    propertyArray:JSON.parse(JSON.stringify(propertyArray))
-  }
-}
-// 服务端接口请求
-async function serverPost(fkpapi,api,data){
-  const bodys = await fkpapi.getNewSignBody(api, data)
-  const res = await Fetch.post(api, bodys)
-  return res
-}
 
-//是否是客户端
+
+/**
+ * 是否是客户端
+ * 
+ * @returns {Boolean}
+ */
 function isClient(){
   return typeof window !== 'undefined'
 }
 
-//封装window.history.pushState
+/**
+ * 是否是node端
+ * 
+ * @returns {Boolean}
+ */
+function isNode(){
+  return typeof module !== "undefined" && typeof module.exports !== "undefined"
+}
+
+/**
+ * 封装window.history.pushState
+ * 
+ * @param {String} url:window.location.href
+ */
 function pushState(url){
   if(searchMode === 'async'){
     window.history.pushState({action:'research'},'title',url)
     //触发自定义pushState事件
+    // const e = new Event("pushState");
+    // window.dispatchEvent(e);
     $(window).trigger('pushState',{action:'research'})
   }else{
     window.location.href=url
@@ -179,10 +197,11 @@ module.exports = {
   setSearchParam,
   removeSearchParam,
   getSearchParam,
-  // 其他
+  // rest
   formatPath,
-  getPostData,
-  serverPost,
   pushState,
+  serializeParam,
+  getUrlParam,
   isClient,
+  isNode,
 }
