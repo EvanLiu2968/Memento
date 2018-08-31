@@ -53,22 +53,23 @@ exports.listToTree = function listToArrayTree(list, parentId){
  * @return {Array} list
  */
 exports.listToDisorder = function listToDisorder(list = [], depth = 1){
+  let cloneList = list.slice(0)
   let temp = [];
   const getRandomNum = (min,max) => {
     return parseInt(Math.random()*(max-min))
   }
   // console.log('depth: '+depth)
-  list.forEach((item,i) => {
+  cloneList.forEach((item,i) => {
     let num =0;
     const combNum = () => {
-      num = getRandomNum(0,list.length)
+      num = getRandomNum(0,cloneList.length)
       
-      if(list[num] === list[i]){ // completely different
+      if(cloneList[num] === cloneList[i]){ // completely different
         combNum()
       }
     }
     combNum()
-    temp = temp.concat(list.slice(num,num+1))
+    temp = temp.concat(cloneList.splice(num,num+1))
   })
   depth--;
   if(depth>0){
