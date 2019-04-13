@@ -310,6 +310,37 @@ function thumbnail(src, width) {
   return src
 }
 
+/**
+ *
+ * @export
+ * @returns 随机数ID
+ */
+function randomNumberId() {
+  const timestamp = +new Date() // 13位
+  return parseInt(Math.random() * (9 << 16) + timestamp)
+}
+/**
+ *
+ * @export
+ * @returns 随机字符串ID
+ */
+function randomStringId() {
+  const timestamp = +new Date() + ''
+  const randomNum = ~~((1 + Math.random()) * (1 << 16)) + ''
+  return (+(randomNum + timestamp)).toString(32)
+}
+/**
+ * R,G,B可取值在0~255,当前设定在128~255
+ * @export
+ * @returns 随机颜色
+ */
+function randomColor() {
+  const R = Math.random() * 127 + 128
+  const G = Math.random() * 127 + 128
+  const B = Math.random() * 127 + 128
+  return '#' + (R << 16 | G << 8 | B).toString(16)
+}
+
 module.exports = {
   timeToLastestCn,
   timeToQuantum,
